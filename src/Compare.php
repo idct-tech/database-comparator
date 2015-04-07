@@ -90,7 +90,11 @@ class Compare {
                 $differences = $source->compare($dataObject, $rightObject);
                 $id = $differences['__id'];
                 unset($differences['__id']);
-                $output->reportDifferences($name, $id, $differences);    
+                if($rightObject === false) {
+                    $output->reportDifferences($name, $id, null);        
+                } else {                                   
+                    $output->reportDifferences($name, $id, $differences);
+                }
             }
         }
         

@@ -2,8 +2,7 @@
 namespace IDCT\Db\Tools\Compare;
 
 interface OutputInterface {
-    
-    public function reportSource($name);
-    public function reportDifferences($differences);
+
+    public function reportDifferences($source, $id, $differences);
     
 }

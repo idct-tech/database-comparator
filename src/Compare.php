@@ -15,7 +15,7 @@ class Compare {
     protected $bufferLength = 250;
 
     protected $output;
-    
+        
     protected function getIgnoredFieldsArray() {
         return is_array($this->ignoredFields) ? $this->ignoredFields : array();
     }
@@ -58,6 +58,12 @@ class Compare {
         return $this->output;
     }
     
+    public function setBufferLength($len) {
+        $this->bufferLength = $len;
+        
+        return $this;
+    }
+    
     protected function next() {
         if($this->hasMain() === false) {
             throw new \Exception('Missing main data source');   
@@ -67,6 +73,7 @@ class Compare {
         
         //collect a batch from the main data source
         $mainBatch = $this->getSource('main')->getAll($this->currentOffset, $this->bufferLength);
+
         $output = $this->getOutput();
         
         if($output === null) {
@@ -77,22 +84,27 @@ class Compare {
             if($name === 'main') {
                 continue;
             }
-            
-            $output->reportSource($name);
-            
+
             foreach($mainBatch as $dataObject) {
-                $differences = $source->getAndCompare($dataObject);
-                $output->reportDifferences($differences);    
+                $rightObject = $source->getSingle($dataObject);
+                $differences = $source->compare($dataObject, $rightObject);
+                $id = $differences['__id'];
+                unset($differences['__id']);
+                $output->reportDifferences($name, $id, $differences);    
             }
         }
         
-        if(count($mainBatch) < $length) {
+        if(count($mainBatch) < $this->bufferLength) {
             return false;
         }
         
         $this->currentOffset += $this->bufferLength;
         
         return true;
+    }
+    
+    public function run() {
+        while($this->next()) {};
     }
     
 }

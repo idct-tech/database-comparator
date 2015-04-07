@@ -1,0 +1,35 @@
+{
+    "name": "idct/database-comparator",
+    "description": "Datasource sets comparing tool",
+    "type": "library",
+    "keywords": [
+        "db",
+        "database",
+        "storage",
+        "idct"
+    ],
+    "homepage": "https://github.com/ideaconnect/database-comparator",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "IDCT Bartosz Pachołek",
+            "email": "bartosz@idct.pl",
+            "role": "lead"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/ideaconnect/database-comparator/issues"
+    },
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
+    },
+    "include-path": [
+        ""
+    ]
+}

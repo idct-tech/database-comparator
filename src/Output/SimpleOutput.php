@@ -1,5 +1,5 @@
 <?php
-namespace Casadatos\Compare;
+namespace IDCT\Db\Tools\Compare\Output;
 
 use IDCT\Db\Tools\Compare\Output\OutputInterface as OutputInterface;
 

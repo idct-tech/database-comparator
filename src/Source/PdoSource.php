@@ -92,8 +92,8 @@ class PdoSource implements SourceInterface {
         $identifiers = array();
         $keys = $this->getSingleKeys();
         foreach($keys as $key) {
-            if(isset($their[$keys])) {
-                $identifiers[$keys] = $their[$keys];
+            if(isset($their[$key])) {
+                $identifiers[$key] = $their[$key];
             }
         }
 

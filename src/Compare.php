@@ -84,11 +84,14 @@ class Compare {
             if($name === 'main') {
                 continue;
             }
-
+            $i = 0;
+            $mainBatchCount = (count($mainBatch));
             foreach($mainBatch as $dataObject) {
                 $rightObject = $source->getSingle($dataObject);
                 $differences = $source->compare($dataObject, $rightObject);
+
                 $id = $differences['__id'];
+                var_dump($name . " / " . $i++ . " / " . $mainBatchCount);
                 unset($differences['__id']);
                 if($rightObject === false) {
                     $output->reportDifferences($name, $id, null);
@@ -97,7 +100,7 @@ class Compare {
                 }
             }
         }
-
+        var_dump("finished");
         if(count($mainBatch) < $this->bufferLength) {
             return false;
         }
@@ -108,7 +111,8 @@ class Compare {
     }
 
     public function run() {
-        while($this->next()) {};
+        //while($this->next()) {};
+        $this->next();
     }
 
 }

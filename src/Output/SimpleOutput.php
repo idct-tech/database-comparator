@@ -3,33 +3,37 @@ namespace IDCT\Db\Tools\Compare\Output;
 
 use IDCT\Db\Tools\Compare\Output\OutputInterface as OutputInterface;
 
-class SimpleOutput implements OutputInterface {
+class SimpleOutput implements OutputInterface
+{
     protected $filename;
     protected $cleared = array();
 
-    public function getBaseFilename() {
+    public function getBaseFilename()
+    {
         return $this->filename;
     }
 
-    public function setBaseFilename($filename) {
+    public function setBaseFilename($filename)
+    {
         $this->filename = $filename;
 
         return $this;
     }
 
-    public function reportDifferences($source, $id, $differences) {
+    public function reportDifferences($source, $id, $differences)
+    {
         $baseFileName = $this->getBaseFilename();
         $filename = str_replace('{source}', $source, $baseFileName);
 
-        if(!in_array($filename, $this->cleared)) {
+        if (!in_array($filename, $this->cleared)) {
             $this->cleared[] = $filename;
             file_put_contents($filename, '');
         }
 
         $content = ">>>> OBJECT: " . print_r($id, true) . PHP_EOL . PHP_EOL;
-        if(is_array($differences)) {
-            if(!empty($differences)) {
-                foreach($differences as $difference) {
+        if (is_array($differences)) {
+            if (!empty($differences)) {
+                foreach ($differences as $difference) {
                     $content .= "\tF: " . $difference->getField() . PHP_EOL;
                     $content .= "\tO: " . $difference->getOriginalContent() . PHP_EOL;
                     $content .= "\tN: " . $difference->getNewContent() . PHP_EOL;
@@ -44,6 +48,4 @@ class SimpleOutput implements OutputInterface {
 
         return $this;
     }
-
-
 }

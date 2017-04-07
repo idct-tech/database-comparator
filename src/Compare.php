@@ -4,7 +4,8 @@ namespace IDCT\Db\Tools;
 use IDCT\Db\Tools\Compare\Source\SourceInterface as DataSource;
 use IDCT\Db\Tools\Compare\Output\OutputInterface as OutputInterface;
 
-class Compare {
+class Compare
+{
 
     /**
      * @var array Data sources used in each batch
@@ -16,16 +17,19 @@ class Compare {
 
     protected $output;
 
-    protected function getIgnoredFieldsArray() {
+    protected function getIgnoredFieldsArray()
+    {
         return is_array($this->ignoredFields) ? $this->ignoredFields : array();
     }
 
-    protected function hasMain() {
+    protected function hasMain()
+    {
         return isset($this->sources['main']);
     }
 
-    public function addSource($name, DataSource $source) {
-        if($name === 'main' && $this->hasMain()) {
+    public function addSource($name, DataSource $source)
+    {
+        if ($name === 'main' && $this->hasMain()) {
             throw new \Exception('Main data source already set');
         }
 
@@ -34,38 +38,45 @@ class Compare {
         return $this;
     }
 
-    public function getSource($name) {
+    public function getSource($name)
+    {
         return $this->sources[$name];
     }
 
-    protected function getSources() {
+    protected function getSources()
+    {
         return $this->sources;
     }
 
-    public function resetSources() {
+    public function resetSources()
+    {
         $this->sources = array();
 
         return $this;
     }
 
-    public function setOutput(OutputInterface $output) {
+    public function setOutput(OutputInterface $output)
+    {
         $this->output = $output;
 
         return $this;
     }
 
-    public function getOutput() {
+    public function getOutput()
+    {
         return $this->output;
     }
 
-    public function setBufferLength($len) {
+    public function setBufferLength($len)
+    {
         $this->bufferLength = $len;
 
         return $this;
     }
 
-    protected function next() {
-        if($this->hasMain() === false) {
+    protected function next()
+    {
+        if ($this->hasMain() === false) {
             throw new \Exception('Missing main data source');
         }
 
@@ -76,21 +87,25 @@ class Compare {
 
         $output = $this->getOutput();
 
-        if($output === null) {
+        if ($output === null) {
             throw new \Exception('Output not defined');
         }
 
-        foreach($this->getSources() as $name => $source) {
-            if($name === 'main') {
+        foreach ($this->getSources() as $name => $source) {
+            if ($name === 'main') {
                 continue;
             }
 
-            foreach($mainBatch as $dataObject) {
+            $this->getLastDifferencesCount[$name] = 0;
+
+            foreach ($mainBatch as $dataObject) {
                 $rightObject = $source->getSingle($dataObject);
                 $differences = $source->compare($dataObject, $rightObject);
                 $id = $differences['__id'];
+                $this->getLastDifferencesCount[$name] += $differences['__count'];
                 unset($differences['__id']);
-                if($rightObject === false) {
+                unset($differences['__count']);
+                if ($rightObject === false) {
                     $output->reportDifferences($name, $id, null);
                 } else {
                     $output->reportDifferences($name, $id, $differences);
@@ -98,7 +113,7 @@ class Compare {
             }
         }
 
-        if(count($mainBatch) < $this->bufferLength) {
+        if (count($mainBatch) < $this->bufferLength) {
             return false;
         }
 
@@ -107,8 +122,15 @@ class Compare {
         return true;
     }
 
-    public function run() {
-        while($this->next()) {};
+    public function getLastDifferencesCount()
+    {
+        return $this->lastDifferencesCount;
     }
 
+    public function run()
+    {
+        $this->lastDifferencesCount = [];
+        while ($this->next()) {
+        };
+    }
 }

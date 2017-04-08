@@ -96,13 +96,13 @@ class Compare
                 continue;
             }
 
-            $this->getLastDifferencesCount[$name] = 0;
+            $this->lastDifferencesCount[$name] = 0;
 
             foreach ($mainBatch as $dataObject) {
                 $rightObject = $source->getSingle($dataObject);
                 $differences = $source->compare($dataObject, $rightObject);
                 $id = $differences['__id'];
-                $this->getLastDifferencesCount[$name] += $differences['__count'];
+                $this->lastDifferencesCount[$name] += $differences['__count'];
                 unset($differences['__id']);
                 unset($differences['__count']);
                 if ($rightObject === false) {

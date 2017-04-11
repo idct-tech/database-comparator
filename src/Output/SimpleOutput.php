@@ -20,10 +20,10 @@ class SimpleOutput implements OutputInterface
         return $this;
     }
 
-    protected function getFlatId($id)
+    protected function getFlatId($idValues)
     {
         $id = '';
-        foreach ($id as $key => $value) {
+        foreach ($idValues as $key => $value) {
             $id .= ',' . $key . ': `' . $value . '`';
         }
         return substr($id, 1);

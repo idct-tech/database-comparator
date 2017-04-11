@@ -20,6 +20,15 @@ class SimpleOutput implements OutputInterface
         return $this;
     }
 
+    protected function getFlatId($id)
+    {
+        $id = '';
+        foreach ($id as $key => $value) {
+            $id .= ',' . $key . ': `' . $value . '`';
+        }
+        return substr($id, 1);
+    }
+
     public function reportDifferences($source, $id, $differences)
     {
         $baseFileName = $this->getBaseFilename();
@@ -30,19 +39,20 @@ class SimpleOutput implements OutputInterface
             file_put_contents($filename, '');
         }
 
-        $content = ">>>> OBJECT: " . print_r($id, true) . PHP_EOL . PHP_EOL;
+        $content = '====[ Object > ' . $this->getFlatId($id) . ' ]====' . PHP_EOL;
+
         if (is_array($differences)) {
             if (!empty($differences)) {
                 foreach ($differences as $difference) {
-                    $content .= "\tF: " . $difference->getField() . PHP_EOL;
-                    $content .= "\tO: " . $difference->getOriginalContent() . PHP_EOL;
-                    $content .= "\tN: " . $difference->getNewContent() . PHP_EOL;
+                    $content .= "> F: `" . $difference->getField() . '`' . PHP_EOL;
+                    $content .= "> O: `" . $difference->getOriginalContent() . '`' . PHP_EOL;
+                    $content .= "> N: `" . $difference->getNewContent() . '`' . PHP_EOL;
                     $content .= PHP_EOL;
                 }
                 file_put_contents($filename, $content, FILE_APPEND);
             }
         } else {
-            $content .= "! MISSING" . PHP_EOL . PHP_EOL;
+            $content .= "> Missing in new dataset!" . PHP_EOL;
             file_put_contents($filename, $content, FILE_APPEND);
         }
 

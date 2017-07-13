@@ -144,7 +144,7 @@ class PdoSource implements SourceInterface
 
             $myValue = $mine[$field];
 
-            if ($value !== $myValue) {
+            if (strval($value) !== strval($myValue)) {
                 $difference = new Difference();
                 $difference->setField($field)
                            ->setOriginalContent($value)

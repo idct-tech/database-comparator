@@ -90,7 +90,7 @@ class SimpleOutput implements OutputInterface
         /* gets the base filename with {source} token which will be replaced with
         the name of the currently compared data source */
         $baseFileName = $this->getBaseFilename();
-        $filename = str_replace('{source}', $source, $baseFileName);
+        $filename = str_replace('{source}', $sourceName, $baseFileName);
 
         /* checks if currently processed file needs clearing */
         if (!in_array($filename, $this->cleared)) {

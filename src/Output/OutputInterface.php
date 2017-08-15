@@ -17,5 +17,5 @@ interface OutputInterface
      * @param array $differences
      * @return $this
      */
-    public function reportDifferences($sourceName, $elementId, $differences);
+    public function reportDifferences($sourceName, $elementId, array $differences = null);
 }

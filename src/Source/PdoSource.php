@@ -160,6 +160,9 @@ class PdoSource implements SourceInterface
             if ($this->weakComparison) {
                 $myValue = strval($mine[$field]);
                 $value = strval($value);
+            } else {
+                $myValue = $mine[$field];
+                $value = $value;
             }
 
             if ($value !== $myValue) {

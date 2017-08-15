@@ -16,7 +16,7 @@ class PdoSource implements SourceInterface
 
     protected $transformation;
 
-    public function enableWeakCommparison()
+    public function enableWeakComparison()
     {
         $this->weakComparison = true;
         return $this;

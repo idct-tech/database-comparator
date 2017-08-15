@@ -1,8 +1,21 @@
 <?php
 namespace IDCT\Db\Tools\Compare\Output;
 
-interface OutputInterface {
+/**
+ * Interface for output writing: file, database, logging platform etc.
+ * Differences are going to be reported using a class which implements this
+ * interface.
+ */
+interface OutputInterface
+{
 
-    public function reportDifferences($source, $id, $differences);
-
+    /**
+     * Method used for reporting a single difference.
+     *
+     * @param string $source
+     * @param string|int $id
+     * @param array $differences
+     * @return $this
+     */
+    public function reportDifferences($sourceName, $elementId, $differences);
 }

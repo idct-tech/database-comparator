@@ -1,12 +1,15 @@
 {
     "name": "idct/database-comparator",
-    "description": "Datasource sets comparing tool",
+    "description": "Datasource sets comparing framework",
     "type": "library",
     "keywords": [
         "db",
         "database",
         "storage",
-        "idct"
+        "idct",
+        "comparison",
+        "validation",
+        "compare"
     ],
     "homepage": "https://github.com/ideaconnect/database-comparator",
     "license": "MIT",

@@ -12,8 +12,21 @@ class PdoSource implements SourceInterface
     protected $querySingle;
     protected $ignoredFields;
     protected $singleKeys;
+    protected $weakComparison = false;
 
     protected $transformation;
+
+    public function enableWeakCommparison()
+    {
+        $this->weakComparison = true;
+        return $this;
+    }
+
+    public function disableWeakComparison()
+    {
+        $this->weakComparison = false;
+        return $this;
+    }
 
     public function setPdo($pdo)
     {
@@ -26,6 +39,8 @@ class PdoSource implements SourceInterface
     {
         return $this->pdo;
     }
+
+
 
     public function setIgnoredFields($ignoredFields)
     {
@@ -142,9 +157,12 @@ class PdoSource implements SourceInterface
                 continue;
             }
 
-            $myValue = $mine[$field];
+            if ($this->weakComparison) {
+                $myValue = strval($mine[$field]);
+                $value = strval($value);
+            }
 
-            if (strval($value) !== strval($myValue)) {
+            if ($value !== $myValue) {
                 $difference = new Difference();
                 $difference->setField($field)
                            ->setOriginalContent($value)

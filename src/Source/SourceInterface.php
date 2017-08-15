@@ -47,6 +47,10 @@ interface SourceInterface
      * comparison: useful for types casting or simple changes which are not so
      * major or relevant to build a new or child Source class.
      *
+     * Setter is not in the interface as it is not required by `Compare` class
+     * and method itself may be internally in the source class. If setter is
+     * required then it should be defined in the class.
+     *
      * @return null|\Closure
      */
     public function getSinglePreCheckTransformation();

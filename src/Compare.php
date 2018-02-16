@@ -254,6 +254,6 @@ class Compare
 
     public function __construct()
     {
-        $this->clearFilters();
+        $this->clearFliters();
     }
 }

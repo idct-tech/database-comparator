@@ -218,7 +218,7 @@ class Compare
         return $this;
     }
 
-    public function clearFliters() {
+    public function clearFilters() {
         $this->filterChain = [];
         return $this;
     }
@@ -254,6 +254,6 @@ class Compare
 
     public function __construct()
     {
-        $this->clearFliters();
+        $this->clearFilters();
     }
 }

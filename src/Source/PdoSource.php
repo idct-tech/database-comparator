@@ -310,7 +310,7 @@ class PdoSource implements SourceInterface
         $ignoredFields = $this->getIgnoredFields();
 
         if (($transformation = $this->getSinglePreCheckTransformation()) !== null) {
-            $mine = $transformation($their, $mine);
+            list ($their, $mine) = $transformation($their, $mine);
         }
 
         $count = 0;

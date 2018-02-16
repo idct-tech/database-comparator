@@ -3,6 +3,7 @@ namespace IDCT\Db\Tools;
 
 use IDCT\Db\Tools\Compare\Source\SourceInterface;
 use IDCT\Db\Tools\Compare\Output\OutputInterface;
+use IDCT\Db\Tools\Compare\Filters\FilterInterface;
 
 /**
  * Main comparator class
@@ -184,6 +185,10 @@ class Compare
                 set of keys */
                 $currentObject = $source->getSingle($dataObject);
 
+                foreach ($this->filterChain as $filter) {
+                    list ($dataObject, $currentObject) = $filter->filter($dataObject, $currentObject);
+                }
+
                 // perform the comparison
                 $differences = $source->compare($dataObject, $currentObject);
 
@@ -206,6 +211,16 @@ class Compare
         $this->currentOffset += $this->bufferLength;
 
         return true;
+    }
+
+    public function addFilter(FilterInterface $filter) {
+        $this->filterChain[] = $filter;
+        return $this;
+    }
+
+    public function clearFliters() {
+        $this->filterChain = [];
+        return $this;
     }
 
     /**
@@ -235,5 +250,10 @@ class Compare
         };
 
         return $this;
+    }
+
+    public function __construct()
+    {
+        $this->clearFilters();
     }
 }

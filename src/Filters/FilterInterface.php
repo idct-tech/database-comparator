@@ -1,7 +1,7 @@
 <?php
 namespace IDCT\Db\Tools\Compare\Filters;
 
-class FilterInterface {
+interface FilterInterface {
 
     public function filter($left, $right);
 

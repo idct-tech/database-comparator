@@ -20,60 +20,14 @@ use IDCT\Db\Tools\Compare\Difference;
  * or
  * > Missing in new dataset!
  */
-class SimpleOutput implements OutputInterface
+class SingleFileOutput extends TextFileOutput implements OutputInterface
 {
-    /**
-     * Base filename to which the report is saved.
-     *
-     * @var string
-     */
-    protected $filename;
-
     /**
      * Array of already cleared files (file paths)
      *
      * @var string[]
      */
     protected $cleared = array();
-
-    /**
-     * Returns the base file name (with {source} token).
-     *
-     * @return string
-     */
-    public function getBaseFilename()
-    {
-        return $this->filename;
-    }
-
-    /**
-     * Sets the base file name (with {source} token).
-     *
-     * @param string $filename
-     * @return $this
-     */
-    public function setBaseFilename($filename)
-    {
-        $this->filename = $filename;
-
-        return $this;
-    }
-
-    /**
-     * Returns entry row id in a form of plain string: if id is complex writes
-     * them after commas.
-     *
-     * @param string[] $idValues
-     * @return string
-     */
-    protected function getFlatId($idValues)
-    {
-        $id = '';
-        foreach ($idValues as $key => $value) {
-            $id .= ',' . $key . ': `' . $value . '`';
-        }
-        return substr($id, 1);
-    }
 
     /**
      * Reports single row's differences.
@@ -89,8 +43,7 @@ class SimpleOutput implements OutputInterface
     {
         /* gets the base filename with {source} token which will be replaced with
         the name of the currently compared data source */
-        $baseFileName = $this->getBaseFilename();
-        $filename = str_replace('{source}', $sourceName, $baseFileName);
+        $filename = $this->getStoragePath() . 'comparison_with_' . $sourceName . '.txt';
 
         /* checks if currently processed file needs clearing */
         if (!in_array($filename, $this->cleared)) {

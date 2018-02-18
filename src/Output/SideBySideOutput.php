@@ -40,28 +40,30 @@ class SideBySideOutput extends TextFileOutput implements OutputInterface
         /* gets the base filename with {source} token which will be replaced with
         the name of the currently compared data source */
         $flatId = $this->getFlatId($id);
-        $filenameLeft = $this->getStoragePath() . $sourceName . '_' . $flatId . '_left.txt';
-        $filenameRight = $this->getStoragePath() . $sourceName . '_' . $flatId . '_right.txt';
+        $filenameLeft = $this->getStoragePath() . $sourceName . '_left.txt';
+        $filenameRight = $this->getStoragePath() . $sourceName . '_right.txt';
 
-        $left = fopen($filenameLeft, "w");
-        $right = fopen($filenameRight, "w");
-
+        $left = fopen($filenameLeft, "a");
+        $right = fopen($filenameRight, "a");
         /* if array of differences is provided ... */
         if (is_array($differences)) {
             if (!empty($differences)) {
+                fputs($left, '====[ Object > ' . $flatId . ' ]====' . PHP_EOL);
+                fputs($right, '====[ Object > ' . $flatId . ' ]====' . PHP_EOL);
                 foreach ($differences as $difference) {
 
                     // do the reporting
-                    fputs($left, $content .= "> F: `" . $difference->getField() . '`' . PHP_EOL
+                    fputs($left, "> F: `" . $difference->getField() . '`' . PHP_EOL
                     . "> V: `" . $difference->getOriginalContent() . '`' . PHP_EOL . PHP_EOL);
 
-                    fputs($right, $content .= "> F: `" . $difference->getField() . '`' . PHP_EOL
+                    fputs($right, "> F: `" . $difference->getField() . '`' . PHP_EOL
                     . "> V: `" . $difference->getNewContent() . '`' . PHP_EOL . PHP_EOL);
                 }
-                file_put_contents($filename, $content, FILE_APPEND);
             }
         } else {
-            fwrite($right, 'Missing in new dataset!');
+            fputs($left, '====[ Object > ' . $flatId . ' ]====' . PHP_EOL);
+            fputs($right, '====[ Object > ' . $flatId . ' ]====' . PHP_EOL);
+            fwrite($right, 'Missing in new dataset!' . PHP_EOL);
         }
 
         fclose($left);

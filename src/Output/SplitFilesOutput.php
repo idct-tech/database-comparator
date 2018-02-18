@@ -39,7 +39,7 @@ class SplitFilesOutput extends TextFileOutput implements OutputInterface
     {
         /* gets the base filename with {source} token which will be replaced with
         the name of the currently compared data source */
-        $flatId = $this->getFlatId($id);
+        $flatId = str_replace([' ','`',',',':'], ['_','_','_','_'], $this->getFlatId($id));
         $filenameLeft = $this->getStoragePath() . $sourceName . '_' . $flatId . '_left.txt';
         $filenameRight = $this->getStoragePath() . $sourceName . '_' . $flatId . '_right.txt';
 
@@ -52,13 +52,12 @@ class SplitFilesOutput extends TextFileOutput implements OutputInterface
                 foreach ($differences as $difference) {
 
                     // do the reporting
-                    fputs($left, $content .= "> F: `" . $difference->getField() . '`' . PHP_EOL
+                    fputs($left, "> F: `" . $difference->getField() . '`' . PHP_EOL
                     . "> V: `" . $difference->getOriginalContent() . '`' . PHP_EOL . PHP_EOL);
 
-                    fputs($right, $content .= "> F: `" . $difference->getField() . '`' . PHP_EOL
+                    fputs($right,"> F: `" . $difference->getField() . '`' . PHP_EOL
                     . "> V: `" . $difference->getNewContent() . '`' . PHP_EOL . PHP_EOL);
                 }
-                file_put_contents($filename, $content, FILE_APPEND);
             }
         } else {
             fwrite($right, 'Missing in new dataset!');

@@ -13,7 +13,7 @@ abstract class TextFileOutput implements OutputInterface
 
     public function setStoragePath($storagePath)
     {
-        if (!is_dir($storagePath) || !$is_writable($storagePath)) {
+        if (!is_dir($storagePath) || !is_writable($storagePath)) {
             throw new RuntimeException('$storagePath must be a writable directory. Provider: `'.$storagePath.'`.');
         }
 

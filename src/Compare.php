@@ -1,9 +1,10 @@
 <?php
+
 namespace IDCT\Db\Tools;
 
-use IDCT\Db\Tools\Compare\Source\SourceInterface;
-use IDCT\Db\Tools\Compare\Output\OutputInterface;
 use IDCT\Db\Tools\Compare\Filters\FilterInterface;
+use IDCT\Db\Tools\Compare\Output\OutputInterface;
+use IDCT\Db\Tools\Compare\Source\SourceInterface;
 
 /**
  * Main comparator class
@@ -38,17 +39,9 @@ class Compare
      */
     protected $output;
 
-    /**
-     * Checks if the main data source is set.
-     *
-     * Main data source is the one to which we compare all the others.
-     * It must be named "main".
-     *
-     * @return boolean
-     */
-    protected function hasMain()
+    public function __construct()
     {
-        return isset($this->sources['main']);
+        $this->clearFilters();
     }
 
     /**
@@ -84,23 +77,13 @@ class Compare
     }
 
     /**
-     * Gets all data sources assigned to this comparison tool.
-     *
-     * @return SourceInterface[string]|null
-     */
-    protected function getSources()
-    {
-        return $this->sources;
-    }
-
-    /**
      * Clears the sources array.
      *
      * @return $this
      */
     public function resetSources()
     {
-        $this->sources = array();
+        $this->sources = [];
 
         return $this;
     }
@@ -142,84 +125,17 @@ class Compare
         return $this;
     }
 
-    /**
-     * Performs a batch of comparisons.
-     *
-     * Returns false when done.
-     *
-     * @return boolean
-     */
-    protected function next()
+    public function addFilter(FilterInterface $filter)
     {
-        if ($this->hasMain() === false) {
-            throw new \Exception('Missing main data source');
-        }
-
-        $results = array();
-
-        /* collects a batch from the main data source - this data source is used
-        for all comparisons */
-        $mainBatch = $this->getSource('main')->getAll($this->currentOffset, $this->bufferLength);
-
-        // finished
-        if (empty($mainBatch)) {
-            return false;
-        }
-
-        // gets the output object
-        $output = $this->getOutput();
-        if ($output === null) {
-            throw new \Exception('Output not defined');
-        }
-
-        // for every source ...
-        foreach ($this->getSources() as $name => $source) {
-            if ($name === 'main') {
-                continue;
-            }
-
-            // for every entry in the main data batch ...
-            foreach ($mainBatch as $dataObject) {
-                /* get object from the current datasource which should be the
-                representation of the original data object based on the provided
-                set of keys */
-                $currentObject = $source->getSingle($dataObject);
-
-                foreach ($this->filterChain as $filter) {
-                    list ($dataObject, $currentObject) = $filter->filter($dataObject, $currentObject);
-                }
-
-                // perform the comparison
-                $differences = $source->compare($dataObject, $currentObject);
-
-                // internal id of the object
-                $id = $differences['__id'];
-
-                // log differences count
-                $this->diffsCount[$name] += $differences['__count'];
-
-                /* we do not need the internals anymore: this will be removed
-                when i switch here to objects */
-                unset($differences['__id']);
-                unset($differences['__count']);
-
-                // if object was not found report with null
-                $output->reportDifferences($name, $id, ($currentObject === false ? null : $differences));
-            }
-        }
-
-        $this->currentOffset += $this->bufferLength;
-
-        return true;
-    }
-
-    public function addFilter(FilterInterface $filter) {
         $this->filterChain[] = $filter;
+
         return $this;
     }
 
-    public function clearFilters() {
+    public function clearFilters()
+    {
         $this->filterChain = [];
+
         return $this;
     }
 
@@ -252,8 +168,97 @@ class Compare
         return $this;
     }
 
-    public function __construct()
+    /**
+     * Checks if the main data source is set.
+     *
+     * Main data source is the one to which we compare all the others.
+     * It must be named "main".
+     *
+     * @return boolean
+     */
+    protected function hasMain()
     {
-        $this->clearFilters();
+        return isset($this->sources['main']);
+    }
+
+    /**
+     * Gets all data sources assigned to this comparison tool.
+     *
+     * @return SourceInterface[string]|null
+     */
+    protected function getSources()
+    {
+        return $this->sources;
+    }
+
+    /**
+     * Performs a batch of comparisons.
+     *
+     * Returns false when done.
+     *
+     * @return boolean
+     */
+    protected function next()
+    {
+        if ($this->hasMain() === false) {
+            throw new \Exception('Missing main data source');
+        }
+
+        $results = [];
+
+        /* collects a batch from the main data source - this data source is used
+        for all comparisons */
+        $mainBatch = $this->getSource('main')->getAll($this->currentOffset, $this->bufferLength);
+
+        // finished
+        if (empty($mainBatch)) {
+            return false;
+        }
+
+        // gets the output object
+        $output = $this->getOutput();
+        if ($output === null) {
+            throw new \Exception('Output not defined');
+        }
+
+        // for every source ...
+        foreach ($this->getSources() as $name => $source) {
+            if ($name === 'main') {
+                continue;
+            }
+
+            // for every entry in the main data batch ...
+            foreach ($mainBatch as $dataObject) {
+                /* get object from the current datasource which should be the
+                representation of the original data object based on the provided
+                set of keys */
+                $currentObject = $source->getSingle($dataObject);
+
+                foreach ($this->filterChain as $filter) {
+                    list($dataObject, $currentObject) = $filter->filter($dataObject, $currentObject);
+                }
+
+                // perform the comparison
+                $differences = $source->compare($dataObject, $currentObject);
+
+                // internal id of the object
+                $id = $differences['__id'];
+
+                // log differences count
+                $this->diffsCount[$name] += $differences['__count'];
+
+                /* we do not need the internals anymore: this will be removed
+                when i switch here to objects */
+                unset($differences['__id']);
+                unset($differences['__count']);
+
+                // if object was not found report with null
+                $output->reportDifferences($name, $id, ($currentObject === false ? null : $differences));
+            }
+        }
+
+        $this->currentOffset += $this->bufferLength;
+
+        return true;
     }
 }

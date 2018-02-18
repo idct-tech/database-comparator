@@ -1,8 +1,8 @@
 <?php
+
 namespace IDCT\Db\Tools\Compare\Source;
 
 use IDCT\Db\Tools\Compare\Difference;
-use IDCT\Db\Tools\Compare\Source\SourceInterface;
 use PDO;
 
 /**
@@ -89,6 +89,7 @@ class PdoSource implements SourceInterface
     public function enableWeakComparison()
     {
         $this->weakComparison = true;
+
         return $this;
     }
 
@@ -102,6 +103,7 @@ class PdoSource implements SourceInterface
     public function disableWeakComparison()
     {
         $this->weakComparison = false;
+
         return $this;
     }
 
@@ -253,29 +255,6 @@ class PdoSource implements SourceInterface
     }
 
     /**
-     * Extracts single identifier's value from the original record.
-     *
-     * @param array $their
-     * @return array
-     */
-    protected function getObjectId($their)
-    {
-        $identifiers = array();
-        $keys = $this->getSingleKeys();
-        foreach ($keys as $key) {
-            if (isset($their[$key])) {
-                $identifiers[$key] = $their[$key];
-            }
-        }
-
-        if (empty($identifiers)) {
-            return null;
-        }
-
-        return $identifiers;
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function getSinglePreCheckTransformation()
@@ -306,11 +285,11 @@ class PdoSource implements SourceInterface
      */
     public function compare($their, $mine)
     {
-        $differences = array();
+        $differences = [];
         $ignoredFields = $this->getIgnoredFields();
 
         if (($transformation = $this->getSinglePreCheckTransformation()) !== null) {
-            list ($their, $mine) = $transformation($their, $mine);
+            list($their, $mine) = $transformation($their, $mine);
         }
 
         $count = 0;
@@ -343,5 +322,28 @@ class PdoSource implements SourceInterface
         $differences['__count'] = $count;
 
         return $differences;
+    }
+
+    /**
+     * Extracts single identifier's value from the original record.
+     *
+     * @param array $their
+     * @return array
+     */
+    protected function getObjectId($their)
+    {
+        $identifiers = [];
+        $keys = $this->getSingleKeys();
+        foreach ($keys as $key) {
+            if (isset($their[$key])) {
+                $identifiers[$key] = $their[$key];
+            }
+        }
+
+        if (empty($identifiers)) {
+            return null;
+        }
+
+        return $identifiers;
     }
 }

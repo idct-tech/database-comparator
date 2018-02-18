@@ -1,9 +1,8 @@
 <?php
+
 namespace IDCT\Db\Tools\Compare\Output;
 
-use IDCT\Db\Tools\Compare\Output\OutputInterface;
 use IDCT\Db\Tools\Compare\Difference;
-use RuntimeException;
 
 /**
  * Basic reporter, saves differences in plain text format, in separate files,
@@ -58,7 +57,6 @@ class SplitFilesOutput extends TextFileOutput implements OutputInterface
 
                     fputs($right, $content .= "> F: `" . $difference->getField() . '`' . PHP_EOL
                     . "> V: `" . $difference->getNewContent() . '`' . PHP_EOL . PHP_EOL);
-
                 }
                 file_put_contents($filename, $content, FILE_APPEND);
             }

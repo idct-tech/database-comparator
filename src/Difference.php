@@ -1,4 +1,5 @@
 <?php
+
 namespace IDCT\Db\Tools\Compare;
 
 /**
@@ -6,7 +7,6 @@ namespace IDCT\Db\Tools\Compare;
  */
 class Difference
 {
-
     /**
      * Original content: from original data source.
      *

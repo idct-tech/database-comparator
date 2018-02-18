@@ -1,8 +1,7 @@
 <?php
+
 namespace IDCT\Db\Tools\Compare\Output;
 
-use IDCT\Db\Tools\Compare\Output\OutputInterface;
-use IDCT\Db\Tools\Compare\Difference;
 use RuntimeException;
 
 /**
@@ -12,7 +11,8 @@ abstract class TextFileOutput implements OutputInterface
 {
     protected $storagePath;
 
-    public function setStoragePath($storagePath) {
+    public function setStoragePath($storagePath)
+    {
         if (!is_dir($storagePath) || !$is_writable($storagePath)) {
             throw new RuntimeException('$storagePath must be a writable directory. Provider: `'.$storagePath.'`.');
         }
@@ -22,6 +22,7 @@ abstract class TextFileOutput implements OutputInterface
         }
 
         $this->storagePath = $storagePath;
+
         return $this;
     }
 
@@ -29,6 +30,8 @@ abstract class TextFileOutput implements OutputInterface
     {
         return $this->storagePath;
     }
+
+    abstract public function reportDifferences($sourceName, $id, array $differences = null);
 
     /**
      * Returns entry row id in a form of plain string: if id is complex writes
@@ -43,8 +46,7 @@ abstract class TextFileOutput implements OutputInterface
         foreach ($idValues as $key => $value) {
             $id .= ',' . $key . ': `' . $value . '`';
         }
+
         return substr($id, 1);
     }
-
-    abstract public function reportDifferences($sourceName, $id, array $differences = null);
 }

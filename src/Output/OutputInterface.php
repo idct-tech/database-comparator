@@ -1,4 +1,5 @@
 <?php
+
 namespace IDCT\Db\Tools\Compare\Output;
 
 /**
@@ -8,7 +9,6 @@ namespace IDCT\Db\Tools\Compare\Output;
  */
 interface OutputInterface
 {
-
     /**
      * Method used for reporting a single difference.
      *

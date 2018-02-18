@@ -1,4 +1,5 @@
 <?php
+
 namespace IDCT\Db\Tools\Compare\Source;
 
 /**
@@ -6,7 +7,6 @@ namespace IDCT\Db\Tools\Compare\Source;
  */
 interface SourceInterface
 {
-
     /**
      * Method used for getting batches of results from the original datasource
      * for comparison.

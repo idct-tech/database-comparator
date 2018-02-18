@@ -1,7 +1,7 @@
 <?php
+
 namespace IDCT\Db\Tools\Compare\Output;
 
-use IDCT\Db\Tools\Compare\Output\OutputInterface;
 use IDCT\Db\Tools\Compare\Difference;
 
 /**
@@ -27,7 +27,7 @@ class SingleFileOutput extends TextFileOutput implements OutputInterface
      *
      * @var string[]
      */
-    protected $cleared = array();
+    protected $cleared = [];
 
     /**
      * Reports single row's differences.
